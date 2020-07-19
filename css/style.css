@@ -1,0 +1,53 @@
+figure {
+  background-color: black;
+  margin: 0;
+  height: 300px;
+  padding: 20px;
+}
+.container {
+  padding: 0 1em;
+  display: flex;
+  flex-direction: column;
+}
+/* nav */
+nav {
+  padding: 2rem 1rem;
+}
+nav .container {
+  flex-direction: row;
+}
+
+nav h1 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+}
+/* main */
+
+main .container {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+main .container aside {
+  flex-basis: 20%;
+  padding: 1em;
+}
+main .container article {
+  flex-basis: 80%;
+}
+main .container article .products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+main .container article .products img {
+  width: 100%;
+  height: 260px;
+  cursor: pointer;
+}
+footer {
+  background-color: black;
+  padding: 5em;
+}
