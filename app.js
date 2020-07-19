@@ -5,7 +5,7 @@ var xhttp = new XMLHttpRequest("./");
 console.log(xhttp.responseText);
 // how many images to dsplay each time
 const numberOfProductsToDisplay = 3;
-let numberOfRounds = 10;
+let numberOfRounds = 25;
 function Product(name, extention = "jpg") {
   this.name = name;
   this.path = `./img/${name}.${extention}`;
