@@ -1,8 +1,8 @@
 /* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 const allProducts = [];
-var xhttp = new XMLHttpRequest("./");
-console.log(xhttp.responseText);
+const arrOfProdects = [];
+let temp = [];
 // how many images to dsplay each time
 const numberOfProductsToDisplay = 3;
 let numberOfRounds = 25;
@@ -11,6 +11,7 @@ function Product(name, extention = "jpg") {
   this.path = `./img/${name}.${extention}`;
   this.numberOfShown = 0;
   this.votes = 0;
+  this.unique = true;
 }
 let images = [
   "bag",
@@ -38,29 +39,32 @@ images.forEach((img) => {
   if (typeof img === "string") allProducts.push(new Product(img));
   else allProducts.push(new Product(img.name, img.extention));
 });
-console.log(allProducts);
 
 function displayRandomProduct() {
-  const arrOfProdects = [];
   let count = 0;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     // get random number
     let randomIndex = randomNum();
     // if the product is not unique then repeat
+    if (!allProducts[randomIndex].unique) continue;
     if (arrOfProdects.includes(allProducts[randomIndex])) continue;
     // if all okay then add a product
+    allProducts[randomIndex].unique = false;
     arrOfProdects[count] = allProducts[randomIndex];
     // increment the count
     count++;
     // ic count === the number of images that need to be displayed then stop the loop
     if (count === numberOfProductsToDisplay) break;
   }
-  return arrOfProdects;
+  temp = arrOfProdects;
+  console.log("from the random", arrOfProdects);
 }
-console.table(displayRandomProduct());
 function displayImages() {
-  const arrOfProdects = displayRandomProduct();
+  displayRandomProduct();
+  console.table(arrOfProdects);
+  console.table(allProducts);
+
   // add one to every shown image
   allProducts.forEach((product) => {
     for (let index = 0; index < arrOfProdects.length; index++) {
@@ -83,7 +87,6 @@ function displayImages() {
     img.addEventListener("click", votedProducts);
     //append the imag to the fig
     figure.appendChild(img);
-    console.log(img);
     // ad the figure to the products section
     products.appendChild(figure);
   }
@@ -93,20 +96,27 @@ displayImages();
 function votedProducts() {
   const name = event.path[0].alt;
   let index = -1;
-  console.log(name);
   for (let product = 0; product < allProducts.length; product++) {
     if (name === allProducts[product]["name"]) index = product;
   }
-  console.log(index);
   allProducts[index].votes++;
-  console.log(allProducts[index]);
+  // make a copy of the current displayed products
+
   displayImages();
+  // switch the unique property for the previus products after displaying the new products
+  allProducts.forEach((product) => {
+    const { name } = product;
+    product.unique = true;
+    for (let i = 0; i < temp.length; i++) {
+      if (name === temp[i]["name"]) product.unique = false;
+    }
+  });
+  console.log(arrOfProdects);
+  console.table(allProducts);
   numberOfRounds--;
-  console.log("numberOfRounds", numberOfRounds);
   if (numberOfRounds === 0) {
     console.table(allProducts);
     let images = document.querySelectorAll("figure img");
-    console.log(images.length);
     for (let img = 0; img < images.length; img++) {
       images[img].removeEventListener("click", votedProducts);
     }
@@ -124,7 +134,6 @@ function displayResults() {
 
   allProducts.forEach((product) => {
     const { votes, name, numberOfShown } = product;
-    console.log(votes, name);
     const li = document.createElement("li");
     li.innerHTML = `${name} had ${votes} votes and was shown ${numberOfShown} times`;
     if (votes > 0) votedProductsList.appendChild(li);
