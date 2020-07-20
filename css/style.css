@@ -49,6 +49,11 @@ main .container article .products img {
   width: 100%;
   height: 260px;
 }
+main .container article .products .graphs {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 footer {
   background-color: black;
   padding: 5em;

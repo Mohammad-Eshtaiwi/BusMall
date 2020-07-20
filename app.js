@@ -4,8 +4,8 @@ const allProducts = [];
 const renderedOfProdects = [];
 let temp = [];
 // how many images to dsplay each time
-const numberOfProductsToDisplay = 6;
-let numberOfRounds = 10;
+const numberOfProductsToDisplay = 3;
+let numberOfRounds = 25;
 function Product(name, extention = "jpg") {
   this.name = name;
   this.path = `./img/${name}.${extention}`;
@@ -139,38 +139,72 @@ function displayResults() {
   });
   //display the bar graph for the number of showns
   const numberOfShown = [];
+  const votes = [];
   const names = [];
-  const colors = [];
-  const borderColors = [];
+  const backgroundColor = [];
+  const borderColor = [];
   allProducts.forEach((product) => {
     numberOfShown.push(product.numberOfShown);
     names.push(product.name);
+    votes.push(product.votes);
     //genarate random rgb colors
     let tempColor = [randomNum(256), randomNum(256), randomNum(256)];
-    colors.push(`rgba(${tempColor[0]},${tempColor[2]},${tempColor[0]},0.2)`);
-    borderColors.push(
-      `rgba(${tempColor[0]},${tempColor[2]},${tempColor[0]},1)`
+    backgroundColor.push(
+      `rgba(${tempColor[0]},${tempColor[1]},${tempColor[2]},0.2)`
     );
+    borderColor.push(`rgba(${tempColor[0]},${tempColor[2]},${tempColor[0]},1)`);
   });
-  console.log(colors, borderColors);
-  console.log(names, numberOfShown);
-  const graphs = document.querySelector(".graphs");
-  const barCanvas = document.createElement("canvas");
-  const barCanvasCtx = barCanvas.getContext("2d");
-  console.log(barCanvasCtx);
-  console.log(graphs);
-  graphs.appendChild(barCanvas);
+  console.table(allProducts);
+  // render graph for number of shown
+  renderGraph(
+    `# of shown`,
+    names,
+    numberOfShown,
+    ".graph-for-shown",
+    backgroundColor,
+    borderColor
+  );
+  // render graph for number of votes
+  renderGraph(
+    `# of votes`,
+    names,
+    votes,
+    ".graph-for-votes",
+    backgroundColor,
+    borderColor
+  );
+}
+
+//genarate a random number
+function randomNum(range = allProducts.length) {
+  return Math.floor(Math.random() * range);
+}
+// function to make a graph
+
+function renderGraph(
+  label,
+  labels,
+  data,
+  container,
+  backgroundColor,
+  borderColor,
+  type = "bar"
+) {
+  const canvas = document.createElement("canvas");
+  const canvasCtx = canvas.getContext("2d");
+  container = document.querySelector(container);
+  container.appendChild(canvas);
   // eslint-disable-next-line no-undef
-  const numberOfShownGraph = new Chart(barCanvasCtx, {
-    type: "bar",
+  const graph = new Chart(canvasCtx, {
+    type,
     data: {
-      labels: names,
+      labels,
       datasets: [
         {
-          label: "# of Shown",
-          data: numberOfShown,
-          backgroundColor: colors,
-          borderColor: borderColors,
+          label,
+          data,
+          backgroundColor,
+          borderColor,
           borderWidth: 1,
         },
       ],
@@ -189,11 +223,6 @@ function displayResults() {
       },
     },
   });
-  numberOfShownGraph.canvas.parentNode.style.width = "99%";
-  numberOfShownGraph.canvas.parentNode.style.height = "600px";
-}
-
-//genarate a random number
-function randomNum(range = allProducts.length) {
-  return Math.floor(Math.random() * range);
+  graph.canvas.parentNode.style.width = "99%";
+  graph.canvas.parentNode.style.height = "600px";
 }
