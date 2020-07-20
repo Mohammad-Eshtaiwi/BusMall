@@ -9,6 +9,9 @@ figure {
   display: flex;
   flex-direction: column;
 }
+.pointer {
+  cursor: pointer;
+}
 /* nav */
 nav {
   padding: 2rem 1rem;
@@ -45,7 +48,6 @@ main .container article .products {
 main .container article .products img {
   width: 100%;
   height: 260px;
-  cursor: pointer;
 }
 footer {
   background-color: black;
