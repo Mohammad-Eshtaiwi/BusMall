@@ -58,7 +58,6 @@ function generateRandomProduct() {
     if (count === numberOfProductsToDisplay) break;
   }
   temp = renderedOfProdects;
-  console.log("from the random", renderedOfProdects);
 }
 function displayImages() {
   generateRandomProduct();
@@ -115,7 +114,6 @@ function votedProducts() {
     let images = document.querySelectorAll("figure img");
     for (let img = 0; img < images.length; img++) {
       images[img].removeEventListener("click", votedProducts);
-      console.log("removed");
       images[img].classList.remove("pointer");
     }
     displayResults();
@@ -154,7 +152,7 @@ function displayResults() {
     );
     borderColor.push(`rgba(${tempColor[0]},${tempColor[2]},${tempColor[0]},1)`);
   });
-  console.table(allProducts);
+
   // render graph for number of shown
   renderGraph(
     `# of shown`,
@@ -173,6 +171,8 @@ function displayResults() {
     backgroundColor,
     borderColor
   );
+  // save the data into the local storage
+  saveData();
 }
 
 //genarate a random number
@@ -225,4 +225,36 @@ function renderGraph(
   });
   graph.canvas.parentNode.style.width = "99%";
   graph.canvas.parentNode.style.height = "600px";
+}
+
+// saved data to local storage
+function saveData() {
+  let arrVotes = [];
+  let arrShownTimes = [];
+  allProducts.forEach((product) => {
+    const { votes, numberOfShown, name } = product;
+    arrVotes.push({ name, votes });
+    arrShownTimes.push({ name, numberOfShown });
+  });
+  saveDataLogic(arrVotes, "votes");
+  saveDataLogic(arrShownTimes, "numberOfShown");
+}
+function saveDataLogic(currentData, key) {
+  // if not exist create new one
+  if (!localStorage.getItem(key)) {
+    currentData = JSON.stringify(currentData);
+    JSON.parse(localStorage.getItem(key));
+    localStorage.setItem(`${key}`, currentData);
+  }
+  //if exist get it from the storage and add the current data then store it again
+  else {
+    let storedRecord = JSON.parse(localStorage.getItem(key));
+    console.log(storedRecord);
+    storedRecord.forEach((stored, index) => {
+      console.log(stored);
+      stored[key] += currentData[index][key];
+    });
+    storedRecord = JSON.stringify(storedRecord);
+    localStorage.setItem(key, storedRecord);
+  }
 }
