@@ -116,6 +116,9 @@ function votedProducts() {
       images[img].removeEventListener("click", votedProducts);
       images[img].classList.remove("pointer");
     }
+    // save the data into the local storage
+    saveData();
+    updateAllProducts();
     displayResults();
   }
 }
@@ -171,8 +174,6 @@ function displayResults() {
     backgroundColor,
     borderColor
   );
-  // save the data into the local storage
-  saveData();
 }
 
 //genarate a random number
@@ -246,6 +247,8 @@ function saveDataLogic(currentData, key) {
     JSON.parse(localStorage.getItem(key));
     localStorage.setItem(`${key}`, currentData);
   }
+  // update all products from the storage
+
   //if exist get it from the storage and add the current data then store it again
   else {
     let storedRecord = JSON.parse(localStorage.getItem(key));
@@ -257,4 +260,13 @@ function saveDataLogic(currentData, key) {
     storedRecord = JSON.stringify(storedRecord);
     localStorage.setItem(key, storedRecord);
   }
+}
+function updateAllProducts() {
+  let storedVotes = JSON.parse(localStorage.getItem("votes"));
+  let storedNumberOfShown = JSON.parse(localStorage.getItem("numberOfShown"));
+  allProducts.forEach((product, index) => {
+    console.log(storedVotes[index]);
+    product.votes = storedVotes[index].votes;
+    product.numberOfShown = storedNumberOfShown[index].numberOfShown;
+  });
 }
